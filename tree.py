@@ -5,20 +5,8 @@ import re
 # init: "F-F-F-F", mapping: "F" => "F-F+F+FF-F-F+F", delta = 90
 # init: "F--F--F", mapping: "F" => "F+F--F+F", delta = 45
 
-def draw_string(string, delta=90, d=10):
-    for c in string:
-        if c == 'F':
-            t.forward(d)
-        elif c == 'f':
-            t.penup()
-            t.forward(d)
-            t.pendown()
-        elif c == '+':
-            t.left(delta)
-        elif c == '-':
-            t.right(delta)
 
-class Tree:
+class LSystemTree:
     def __init__(self, rules, init=''):
         self.rules = rules
         self.init = init
@@ -29,7 +17,23 @@ class Tree:
             for (pre, post) in self.rules:
                 self.string = self.string.replace(pre, post)
 
-tree = Tree([("F", "F+F--F+F")], "F--F--F")
+    def draw(self, delta=90, d=10):
+        for c in self.string:
+            if c == 'F':
+                t.forward(d)
+            elif c == 'f':
+                t.penup()
+                t.forward(d)
+                t.pendown()
+            elif c == '+':
+                t.left(delta)
+            elif c == '-':
+                t.right(delta)
+
+tree = LSystemTree([
+    ("F", "FF"),
+    ("f", "ff"),
+    ("D", "+FD----f++FD----f---FD----f----")
+], "FD")
 tree.run(4)
-print(tree.string)
-draw_string(tree.string, 60, 1)
+tree.draw(45, 5)
